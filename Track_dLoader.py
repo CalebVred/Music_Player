@@ -8,22 +8,23 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.firefox.options import Options
 #from selenium.webdriver import ActionChains
-
+from pytube import YouTube
 
 #Track_dLoader class takes in a source (RSS) feed and finds
 #and downloads the latest episode
 class Track_dLoader:
     #Initialize
-    def __init__(self, feedURL, showTitle):
+    def __init__(self, feedURL, showTitle, dest):
         #feedparser
         self.episodeList = []
         self.feedURL = feedURL
         self.showTitle = showTitle
+        self.dest = dest
        
         opt = webdriver.ChromeOptions()
         opt.binary_location = "~/chromedriver"
         #Selenium
-        self.driver = webdriver.Chrome(chrome_options=opt, executable_path='~/chromedriver')
+        #self.driver = webdriver.Chrome(chrome_options=opt, executable_path='~/chromedriver')
         #TODO: This triggers an error
 
     #Retrieves a list of podcast episodes from RSS feed
@@ -47,10 +48,24 @@ class Track_dLoader:
         showTemplate = re.compile(showT)
         search = showTemplate.search(itemT)
         if search:
+
             return 0
         else:
             return -1
+    #Download YouTube video and convert to mp3
+    def dLoadYT(self, episode):
+        print("DEBUG function dLoadYT: episode link:", episode.link)
+        print("DEBUG function dLoadYT: episode title:", episode.title)
+        print("DEBUG function dLoadYT: file destination:", self.dest)
+        try:
+            YouTube(episode.link).streams.first().download(self.dest)
+        except:
+            print("Connection Error: link might be invalid or video could be removed")
+
     
+        #Get StreamQuery object from YouTube stream 
+            
+    '''
     #Open the link with Selenium
     def openAndDownload(self, episode):
         #TODO: May need to make separate API for handling Zencast modules
@@ -65,4 +80,4 @@ class Track_dLoader:
         dLoadButtonXPath = "/html/body/div[2]/div/div/div[3]/div[1]/div[2]/h6"
         dLoadButton = self.driver.find_elements_by_xpath(dLoadButtonXPath)
         actions.context_click(dLoadButton).perform()
-    
+    '''
