@@ -1,6 +1,7 @@
 import feedparser
 import re
 import sys
+
 from selenium import webdriver
 from selenium.webdriver import Chrome
 #from selenium.webdriver import Firefox
@@ -8,6 +9,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.firefox.options import Options
 #from selenium.webdriver import ActionChains
+
 from pytube import YouTube
 
 #Track_dLoader class takes in a source (RSS) feed and finds
@@ -31,9 +33,9 @@ class Track_dLoader:
     def dLoadEList(self):
         feed = feedparser.parse(self.feedURL)
         
-        for item in feed.entries:
-            if(self.containsTitle(item.title, self.showTitle)) != -1:
-                self.episodeList.append(item)
+        for entry in feed.entries:
+            if(self.containsTitle(entry.title, self.showTitle)) != -1:
+                self.episodeList.append(entry)
 
     #Retrieve local episode list
     def getEList(self):
@@ -43,20 +45,14 @@ class Track_dLoader:
     #Searches the string RSS item title itemT for substring show title showT
     #Returns 0 if the title is present or the episode number if available
     #Returns -1 if the title is not present
-    def containsTitle(self, itemT, showT):
-        #TODO: change this to accomodate episode number
-        showTemplate = re.compile(showT)
-        search = showTemplate.search(itemT)
-        if search:
-
+    def containsTitle(self, entryT, showT):
+        search = entryT.find(showT)
+        if search != -1:
             return 0
         else:
             return -1
     #Download YouTube video and convert to mp3
     def dLoadYT(self, episode):
-        print("DEBUG function dLoadYT: episode link:", episode.link)
-        print("DEBUG function dLoadYT: episode title:", episode.title)
-        print("DEBUG function dLoadYT: file destination:", self.dest)
         try:
             YouTube(episode.link).streams.first().download(self.dest)
         except:
