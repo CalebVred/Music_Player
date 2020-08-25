@@ -1,6 +1,9 @@
 import feedparser
 import re
 import sys
+from pytube import YouTube
+import os
+import platform
 
 from selenium import webdriver
 from selenium.webdriver import Chrome
@@ -10,10 +13,10 @@ from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.firefox.options import Options
 #from selenium.webdriver import ActionChains
 
-from pytube import YouTube
+
 
 #Track_dLoader class takes in a source (RSS) feed and finds
-#and downloads the latest episode
+#and downloads the latest episode based on the show title
 class Track_dLoader:
     #Initialize
     def __init__(self, feedURL, showTitle, dest):
@@ -33,10 +36,12 @@ class Track_dLoader:
     def dLoadEList(self):
         feed = feedparser.parse(self.feedURL)
         
+        #Appends to self.episodeList RSS entries that contain the show title
         for entry in feed.entries:
             if(self.containsTitle(entry.title, self.showTitle)) != -1:
                 self.episodeList.append(entry)
 
+    
     #Retrieve local episode list
     def getEList(self):
         return self.episodeList
@@ -51,7 +56,8 @@ class Track_dLoader:
             return 0
         else:
             return -1
-    #Download YouTube video and convert to mp3
+    
+    #Download YouTube video an RSS feed item that links to a YouTube video
     def dLoadYT(self, episode):
         try:
             YouTube(episode.link).streams.first().download(self.dest)
@@ -59,7 +65,6 @@ class Track_dLoader:
             print("Connection Error: link might be invalid or video could be removed")
 
     
-        #Get StreamQuery object from YouTube stream 
             
     '''
     #Open the link with Selenium
