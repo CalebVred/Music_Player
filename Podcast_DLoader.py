@@ -2,6 +2,7 @@ import feedparser
 import re
 import sys
 from pytube import YouTube
+#from moviepy.editor import *
 import os
 import platform
 
@@ -22,7 +23,7 @@ class Track_dLoader:
     #Initialize
     def __init__(self, feedURL, showTitle, dest):
         #feedparser
-        self.episodeList =AN Sh []
+        self.episodeList = []
         self.feedURL = feedURL
         self.showTitle = showTitle
         self.dest = dest
@@ -78,7 +79,9 @@ class Track_dLoader:
     #Download YouTube video an RSS feed item that links to a YouTube video
     def dLoadYT(self, episode):
         try:
-            YouTube(episode.link).streams.first().download(self.dest)
+            t=YouTube(episode.link).streams.filter(only_audio=True).all()
+            t.download(self.dest)
+            #YouTube(episode.link).streams.first().download(self.dest)
         except:
             print("Connection Error: link might be invalid or video could be removed")
 
@@ -93,7 +96,7 @@ class Track_dLoader:
         #Follow the episode link
         self.driver.get(episode.link)
         shareButtonXPath = "/html/body/div[2]/div/div/div[3]/div/div[1]/button[3]"
-        shareButton = self.driver.find_element_by_xpath(shareButtonXPath)
+        shareButton = self.driver.find_el'Flight Sim 2020 will CRUSH Your Gaming Rig- WAN Show August 21 2020.mp4'ement_by_xpath(shareButtonXPath)
         actions.click(shareButton)
 
         dLoadButtonXPath = "/html/body/div[2]/div/div/div[3]/div[1]/div[2]/h6"
