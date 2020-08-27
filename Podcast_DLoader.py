@@ -79,9 +79,8 @@ class Track_dLoader:
     #Download YouTube video an RSS feed item that links to a YouTube video
     def dLoadYT(self, episode):
         try:
-            t=YouTube(episode.link).streams.filter(only_audio=True).all()
-            t.download(self.dest)
-            #YouTube(episode.link).streams.first().download(self.dest)
+            
+            YouTube(episode.link).streams.first().download(self.dest)
         except:
             print("Connection Error: link might be invalid or video could be removed")
 
